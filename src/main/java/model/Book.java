@@ -1,24 +1,26 @@
 package model;
 
 public class Book {
-    private int bookId;
-    private String bookName;
+    private int bookid;
+    private String bookname;
     private String author;
 
-    public int getBookId() {
-        return bookId;
+    private boolean migrated;
+
+    public int getBookid() {
+        return bookid;
     }
 
     public String getAuthor() {
         return author;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getBookname() {
+        return bookname;
     }
 
     @Override
     public String toString() {
-        return "Obtained a book with id " + bookId + " titled " + bookName + " written by " + author;
+        return "Obtained a book with id " + bookid + " titled " + bookname + " written by " + author;
     }
 }
