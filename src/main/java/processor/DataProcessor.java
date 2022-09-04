@@ -11,6 +11,6 @@ public class DataProcessor implements Processor {
         var gson = new Gson();
         String exchangeBody = gson.toJson(exchange.getIn().getBody());
         var book = new Gson().fromJson(exchangeBody, Book.class);
-        exchange.getIn().setBody(book.toString());
+        exchange.getIn().setBody(book);
     }
 }

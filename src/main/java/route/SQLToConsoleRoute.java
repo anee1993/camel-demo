@@ -1,24 +1,28 @@
 package route;
 
 import org.apache.camel.builder.RouteBuilder;
-import processor.DataProcessor;
 
 public class SQLToConsoleRoute extends RouteBuilder {
 
     private final String sqlEndpoint;
-    private final String logConsoleEndpoint;
+
+    private final String directEndpoint;
+
+    private final String logEndpoint;
 
 
-    public SQLToConsoleRoute(String sqlEndpoint, String logConsoleEndpoint) {
+    public SQLToConsoleRoute(String sqlEndpoint, String directEndpoint, String logEndpoint) {
         this.sqlEndpoint = sqlEndpoint;
-        this.logConsoleEndpoint = logConsoleEndpoint;
+        this.directEndpoint = directEndpoint;
+        this.logEndpoint = logEndpoint;
     }
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
         from(sqlEndpoint)
-                .process(new DataProcessor())
-                .to(logConsoleEndpoint)
-        .end();
+                .setHeader("id", simple("${body[bookid]}"))
+                .to(logEndpoint)
+                .to(directEndpoint)
+                .end();
     }
 }

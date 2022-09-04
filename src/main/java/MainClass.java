@@ -1,6 +1,9 @@
+import listener.CDCListener;
 import org.apache.camel.CamelContext;
 import org.apache.camel.main.Main;
+import org.apache.camel.main.MainListener;
 import org.apache.camel.main.MainListenerSupport;
+import route.DirectToSQLRoute;
 import route.SQLToConsoleRoute;
 import util.DataSourceHandler;
 import util.PropertiesFileParser;
@@ -24,14 +27,18 @@ public class MainClass {
     public static void main(String[] args) throws Exception {
         Main main = new Main();
         main.bind("datasource", dataSource);
-        String fromEndpoint = "sql:Select * from temp?datasource=#datasource&repeatCount=1";
-        String toEndpoint = "log:books.log?level=INFO";
+        String sqlInsertEndpoint = "sql:Select * from books where migrated = false?datasource=#datasource"; //&repeatCount=1
 
-        main.addMainListener(new MainListenerSupport() {
+        String directEndpoint = "direct:dummy";
+        String sqlUpdateEndpoint = "sql:update books set migrated = true where bookid = :#id";
+        String logEndpoint = "log:books.log?level=INFO";
+
+        main.addMainListener(new CDCListener() {
             @Override
             public void configure(CamelContext context) {
                 try {
-                    context.addRoutes(new SQLToConsoleRoute(fromEndpoint, toEndpoint));
+                    context.addRoutes(new SQLToConsoleRoute(sqlInsertEndpoint, directEndpoint, logEndpoint));
+                    context.addRoutes(new DirectToSQLRoute(directEndpoint, sqlUpdateEndpoint, logEndpoint));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
