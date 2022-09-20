@@ -2,7 +2,7 @@ package route;
 
 import org.apache.camel.builder.RouteBuilder;
 
-public class SQLToConsoleRoute extends RouteBuilder {
+public class SQLToDirectRoute extends RouteBuilder {
 
     private final String sqlEndpoint;
 
@@ -11,7 +11,7 @@ public class SQLToConsoleRoute extends RouteBuilder {
     private final String logEndpoint;
 
 
-    public SQLToConsoleRoute(String sqlEndpoint, String directEndpoint, String logEndpoint) {
+    public SQLToDirectRoute(String sqlEndpoint, String directEndpoint, String logEndpoint) {
         this.sqlEndpoint = sqlEndpoint;
         this.directEndpoint = directEndpoint;
         this.logEndpoint = logEndpoint;
