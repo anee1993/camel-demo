@@ -1,10 +1,7 @@
-import listener.CDCListener;
-import org.apache.camel.CamelContext;
 import org.apache.camel.main.Main;
 import route.DirectToSQLRoute;
 import route.SQLToDirectRoute;
 import route.SQLToSQLRoute;
-import route.example.DirectToFileRoute;
 import util.DataSourceHandler;
 import util.PropertiesFileParser;
 
@@ -29,26 +26,17 @@ public class MainClass {
         main.bind("datasource", dataSource);
         //RepeatCount when set to 1 makes this endpoint run only once. We can remove this attribute to make the endpoint a periodic poller
         String sqlGetEndpoint = "sql:Select * from books where migrated = false?datasource=#datasource"; //&repeatCount=1
-
-        String directEndpoint = "direct:internal.dummy";
         String sqlUpdateEndpoint = "sql:update books set migrated = true where bookid = :#id";
+
         String logEndpoint = "log:books.log?level=INFO";
 
+        main.configure().addRoutesBuilder(new SQLToSQLRoute(sqlGetEndpoint, sqlUpdateEndpoint, logEndpoint));
 
-
-        main.addMainListener(new CDCListener() {
-            @Override
-            public void configure(CamelContext context) {
-                try {
-                    context.addRoutes(new SQLToDirectRoute(sqlGetEndpoint, directEndpoint, logEndpoint));
-                    context.addRoutes(new DirectToSQLRoute(directEndpoint, sqlUpdateEndpoint, logEndpoint));
-                    //context.addRoutes(new SQLToSQLRoute(sqlGetEndpoint, sqlUpdateEndpoint, logEndpoint));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        String directEndpoint = "direct:internal.dummy";
+//        main.configure().addRoutesBuilder(new SQLToDirectRoute(sqlGetEndpoint, directEndpoint, logEndpoint));
+//        main.configure().addRoutesBuilder(new DirectToSQLRoute(directEndpoint, sqlUpdateEndpoint, logEndpoint));
 
         main.run();
+
     }
 }

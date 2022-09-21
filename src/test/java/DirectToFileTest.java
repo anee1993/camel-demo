@@ -1,9 +1,5 @@
-import org.apache.camel.CamelContext;
-import org.apache.camel.ConsumerTemplate;
 import org.apache.camel.Exchange;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.test.junit5.CamelTestSupport;
 import org.junit.jupiter.api.Test;
 import route.example.DirectToFileRoute;
